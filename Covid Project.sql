@@ -9,8 +9,9 @@ FROM
 SELECT 
     location,
     date,
+    new_cases,
     total_cases,
-    total_death,
+    total_deaths,
     ((total_cases / population) * 100) AS 'cases percentage'
 FROM
     coviddeaths$
@@ -19,9 +20,20 @@ WHERE
 ORDER BY location , date;
 
 
+SELECT 
+    sum(total_cases) as total_cases,
+    sum(total_deaths) as total_deaths,
+    ROUND(((sum(total_cases) / sum(population)) * 100),3) AS 'cases percentage'
+FROM
+    coviddeaths$
+WHERE
+    continent IS NOT NULL;
 
+
+#infection rate#
 SELECT 
     location,
+    max(date) as LATEST_DATE_AVAILABLE,
     population,
     MAX(total_cases) AS 'MAXIMUM INFECTED',
     MAX(total_deaths) AS 'TOTAL DEATHS',
@@ -33,6 +45,7 @@ WHERE
 GROUP BY location , population
 ORDER BY Infection_rate ASC;
 
+#DEATH PERCENTAGE#
 SELECT 
     location,
     population,
@@ -46,6 +59,7 @@ WHERE
 GROUP BY location , population
 ORDER BY TOTAL_DEATHS ASC;
 
+# DEATH PERCENTAGE BY CONTINENT #
 SELECT 
     continent,
     MAX(total_cases) AS 'MAXIMUM INFECTED',
@@ -57,6 +71,8 @@ WHERE
     continent IS NOT NULL
 GROUP BY continent
 ORDER BY TOTAL_DEATHS ASC;
+
+# DEATH PERCENTAGE BY CONTINENT AND POPULATION #
 
 SELECT 
     continent,
